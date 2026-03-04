@@ -28,12 +28,18 @@ def nova_demanda():
         descricao = request.form['descricao']
         solicitante = request.form['solicitante']
 
+        if not titulo or not descricao or not solicitante:
+            flash('Todos os campos são obrigatórios!')
+            return redirect(url_for('nova_demanda'))
 
         conn = sqlite3.connect('demandas.db')
         cursor = conn.cursor()
 
+      
         cursor.execute(
-            f"INSERT INTO demandas (titulo, descricao, solicitante, data_criacao) VALUES ('{titulo}', '{descricao}', '{solicitante}', '{datetime.now()}')")
+            "INSERT INTO demandas (titulo, descricao, solicitante, data_criacao) VALUES (?, ?, ?, ?)",
+            (titulo, descricao, solicitante, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        )
         conn.commit()
         conn.close()
 
@@ -53,8 +59,13 @@ def editar(id):
         descricao = request.form['descricao']
         solicitante = request.form['solicitante']
 
+        if not titulo or not descricao:
+            flash('Erro: Título e Descrição não podem ser vazios.')
+            return redirect(f'/editar/{id}')
+
         cursor.execute(
-            f"UPDATE demandas SET titulo='{titulo}', descricao='{descricao}', solicitante='{solicitante}' WHERE id={id}")
+            "UPDATE demandas SET titulo=?, descricao=?, solicitante=? WHERE id=?",
+            (titulo, descricao, solicitante, id))
         conn.commit()
         conn.close()
         return redirect('/')

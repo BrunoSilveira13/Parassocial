@@ -17,7 +17,7 @@
     <tbody>
         {% for demanda in demandas %}
         <tr>
-            <td>{{ demanda[0] }}</td>
+            <td>{{ loop.index }}</td>
             <td>{{ demanda[1] }}</td>
             <td>{{ demanda[3] }}</td>
             <td>{{ demanda[4] }}</td>
